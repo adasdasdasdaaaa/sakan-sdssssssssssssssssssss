@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: kani-114514
+    name: ai-draw-battle
     env: python
     plan: free
     buildCommand: pip install -r requirements.txt

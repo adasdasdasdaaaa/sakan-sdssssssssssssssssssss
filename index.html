@@ -2,56 +2,17 @@
 <html>
 <head>
   <title>AIお絵描きバトル</title>
-  <style>
-    canvas { border: 1px solid black; }
-    #stats { margin-top: 10px; font-size: 18px; }
-  </style>
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <style>canvas{border:1px solid #000}</style>
 </head>
 <body>
-  <h1>描いた絵の能力をAIが判定！</h1>
+  <h1>AI能力バトル</h1>
   <canvas id="canvas" width="300" height="300"></canvas><br>
   <button onclick="clearCanvas()">クリア</button>
-  <button onclick="sendImage()">AIに送る！</button>
+  <button onclick="submit()">AIに送信！</button>
   <div id="stats"></div>
+  <div id="battleLog"></div>
 
-  <script>
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    let drawing = false;
-
-    canvas.addEventListener('mousedown', () => drawing = true);
-    canvas.addEventListener('mouseup', () => drawing = false);
-    canvas.addEventListener('mouseout', () => drawing = false);
-    canvas.addEventListener('mousemove', draw);
-
-    function draw(e) {
-      if (!drawing) return;
-      const rect = canvas.getBoundingClientRect();
-      ctx.fillStyle = "black";
-      ctx.beginPath();
-      ctx.arc(e.clientX - rect.left, e.clientY - rect.top, 5, 0, 2 * Math.PI);
-      ctx.fill();
-    }
-
-    function clearCanvas() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
-
-    async function sendImage() {
-      const dataURL = canvas.toDataURL('image/png');
-      const res = await fetch('/evaluate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image: dataURL })
-      });
-      const result = await res.json();
-      document.getElementById('stats').innerHTML = `
-        <p><strong>⚔️ 戦闘力</strong></p>
-        <p>強さ: ${result.strength}</p>
-        <p>すばやさ: ${result.speed}</p>
-        <p>ぼうぎょ: ${result.defense}</p>
-      `;
-    }
-  </script>
+  <script src="static/script.js"></script>
 </body>
 </html>
