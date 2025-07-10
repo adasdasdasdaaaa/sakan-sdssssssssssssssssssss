@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: ai-battle-game
+    name: kani-114514
     env: python
     plan: free
     buildCommand: pip install -r requirements.txt

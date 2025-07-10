@@ -1,47 +1,56 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>AIバトル絵描き</title>
+  <title>AIお絵描きバトル</title>
   <style>
     canvas { border: 1px solid black; }
-    #result { margin-top: 20px; font-family: monospace; }
+    #stats { margin-top: 10px; font-size: 18px; }
   </style>
 </head>
 <body>
-  <h1>絵を描いてバトルしよう！</h1>
+  <h1>描いた絵の能力をAIが判定！</h1>
   <canvas id="canvas" width="300" height="300"></canvas><br>
-  <button onclick="sendImage()">戦闘準備！</button>
-  <pre id="result"></pre>
+  <button onclick="clearCanvas()">クリア</button>
+  <button onclick="sendImage()">AIに送る！</button>
+  <div id="stats"></div>
 
   <script>
-    const canvas = document.getElementById("canvas");
-    const ctx = canvas.getContext("2d");
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
     let drawing = false;
 
-    canvas.addEventListener("mousedown", () => drawing = true);
-    canvas.addEventListener("mouseup", () => drawing = false);
-    canvas.addEventListener("mousemove", draw);
+    canvas.addEventListener('mousedown', () => drawing = true);
+    canvas.addEventListener('mouseup', () => drawing = false);
+    canvas.addEventListener('mouseout', () => drawing = false);
+    canvas.addEventListener('mousemove', draw);
 
     function draw(e) {
       if (!drawing) return;
+      const rect = canvas.getBoundingClientRect();
       ctx.fillStyle = "black";
       ctx.beginPath();
-      ctx.arc(e.offsetX, e.offsetY, 4, 0, Math.PI * 2);
+      ctx.arc(e.clientX - rect.left, e.clientY - rect.top, 5, 0, 2 * Math.PI);
       ctx.fill();
     }
 
-    function sendImage() {
-      const dataURL = canvas.toDataURL("image/png");
-      fetch("/analyze", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+    function clearCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    async function sendImage() {
+      const dataURL = canvas.toDataURL('image/png');
+      const res = await fetch('/evaluate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ image: dataURL })
-      })
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById("result").textContent = JSON.stringify(data, null, 2);
       });
+      const result = await res.json();
+      document.getElementById('stats').innerHTML = `
+        <p><strong>⚔️ 戦闘力</strong></p>
+        <p>強さ: ${result.strength}</p>
+        <p>すばやさ: ${result.speed}</p>
+        <p>ぼうぎょ: ${result.defense}</p>
+      `;
     }
   </script>
 </body>
