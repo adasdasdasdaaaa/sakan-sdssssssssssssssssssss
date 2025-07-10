@@ -1,7 +1,7 @@
 services:
   - type: web
-    name: ai-draw-battle
+    name: yazyuu-io
     env: python
-    plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: python server.py
+    plan: free

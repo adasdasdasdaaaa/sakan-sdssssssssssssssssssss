@@ -1,18 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>AIお絵描きバトル</title>
-  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
-  <style>canvas{border:1px solid #000}</style>
+  <meta charset="UTF-8" />
+  <title>yazyuu.io</title>
+  <link rel="stylesheet" href="static/style.css" />
 </head>
 <body>
-  <h1>AI能力バトル</h1>
-  <canvas id="canvas" width="300" height="300"></canvas><br>
-  <button onclick="clearCanvas()">クリア</button>
-  <button onclick="submit()">AIに送信！</button>
-  <div id="stats"></div>
-  <div id="battleLog"></div>
-
-  <script src="static/script.js"></script>
+  <canvas id="gameCanvas" width="800" height="600"></canvas>
+  <script src="static/game.js"></script>
 </body>
 </html>
