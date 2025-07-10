@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>AIバトル絵描き</title>
+  <style>
+    canvas { border: 1px solid black; }
+    #result { margin-top: 20px; font-family: monospace; }
+  </style>
+</head>
+<body>
+  <h1>絵を描いてバトルしよう！</h1>
+  <canvas id="canvas" width="300" height="300"></canvas><br>
+  <button onclick="sendImage()">戦闘準備！</button>
+  <pre id="result"></pre>
+
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    let drawing = false;
+
+    canvas.addEventListener("mousedown", () => drawing = true);
+    canvas.addEventListener("mouseup", () => drawing = false);
+    canvas.addEventListener("mousemove", draw);
+
+    function draw(e) {
+      if (!drawing) return;
+      ctx.fillStyle = "black";
+      ctx.beginPath();
+      ctx.arc(e.offsetX, e.offsetY, 4, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function sendImage() {
+      const dataURL = canvas.toDataURL("image/png");
+      fetch("/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: dataURL })
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("result").textContent = JSON.stringify(data, null, 2);
+      });
+    }
+  </script>
+</body>
+</html>
